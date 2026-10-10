@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hayi Voice Party Room</title>
+    <title>Hayi Party Room</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,122 +14,114 @@
         }
 
         body {
-            background: linear-gradient(180deg, #1f0b35 0%, #0d0614 100%);
-            color: #ffffff;
+            background: #0f0c20;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
 
-        /* Mobile Frame */
+        /* Mobile View Container */
         .app-container {
             width: 100%;
             max-width: 420px;
             height: 100vh;
             max-height: 860px;
-            background: radial-gradient(circle at top, #3b145a 0%, #120724 100%);
+            background: linear-gradient(180deg, #1f1147 0%, #120b2b 100%);
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
             overflow: hidden;
-            border-radius: 16px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
 
-        /* Top Header */
-        .header {
-            padding: 16px;
+        /* Top Bar */
+        .top-bar {
+            padding: 14px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
+            color: #fff;
         }
 
-        .room-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .room-meta h2 {
+            font-size: 16px;
+            font-weight: 700;
         }
 
-        .room-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #ff007f;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .room-meta span {
+            font-size: 11px;
+            color: #a78bfa;
+        }
+
+        .coins-badge {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid #f59e0b;
+            color: #fcd34d;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
             font-weight: bold;
         }
 
-        .room-details h3 {
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        .room-details span {
-            font-size: 11px;
-            color: #a39bb8;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        /* Voice Seats Grid */
+        /* Voice Mic Grid */
         .seats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-            padding: 20px 14px;
+            gap: 12px;
+            padding: 16px;
         }
 
-        .seat {
+        .seat-item {
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 6px;
             cursor: pointer;
-            position: relative;
         }
 
-        .seat-circle {
-            width: 58px;
-            height: 58px;
+        .avatar-circle {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.08);
-            border: 1.5px dashed rgba(255, 255, 255, 0.3);
+            border: 2px dashed #8b5cf6;
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 20px;
-            margin-bottom: 6px;
+            align-items: center;
+            font-size: 24px;
+            position: relative;
             transition: all 0.2s;
         }
 
-        .seat.occupied .seat-circle {
-            border: 2px solid #00f2fe;
-            background: #2b1055;
-            box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+        .avatar-circle.active {
+            border: 2px solid #10b981;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+            background: #2e1065;
         }
 
-        .seat.speaking .seat-circle {
-            animation: pulse 1s infinite alternate;
+        .speaking-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background: #10b981;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #1f1147;
+            display: none;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); border-color: #00f2fe; }
-            100% { transform: scale(1.08); border-color: #ff007f; box-shadow: 0 0 16px #ff007f; }
+        .avatar-circle.active .speaking-badge {
+            display: block;
         }
 
         .seat-name {
             font-size: 11px;
-            color: #c9c3d5;
+            color: #d8b4fe;
             text-align: center;
             max-width: 65px;
             white-space: nowrap;
@@ -137,229 +129,349 @@
             text-overflow: ellipsis;
         }
 
-        /* Chat Section */
-        .chat-container {
-            flex: 1;
+        /* Party Game Box */
+        .game-bar {
+            margin: 0 16px 10px;
             padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .game-bar button {
+            background: #f43f5e;
+            border: none;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Live Chat Feed */
+        .chat-area {
+            flex: 1;
+            padding: 0 16px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 8px;
-            mask-image: linear-gradient(to top, black 80%, transparent 100%);
         }
 
         .chat-bubble {
             background: rgba(0, 0, 0, 0.35);
-            padding: 7px 12px;
+            padding: 6px 12px;
             border-radius: 12px;
             font-size: 13px;
-            align-self: flex-start;
             max-width: 85%;
-            line-height: 1.3;
+            word-break: break-word;
+            align-self: flex-start;
         }
 
-        .chat-bubble .username {
-            color: #ffd200;
-            font-weight: 600;
-            margin-right: 5px;
+        .chat-user {
+            font-weight: bold;
+            color: #a78bfa;
+            margin-right: 6px;
         }
 
-        .system-msg {
-            color: #00f2fe;
+        .chat-msg {
+            color: #f1f5f9;
+        }
+
+        .system-gift-msg {
+            background: rgba(245, 158, 11, 0.15);
+            border-left: 3px solid #f59e0b;
+            color: #fde68a;
             font-size: 12px;
-            background: rgba(0, 242, 254, 0.1);
+            padding: 5px 10px;
+            border-radius: 6px;
         }
 
-        /* Controls / Bottom Bar */
-        .footer-controls {
-            padding: 12px 14px;
+        /* Bottom Controls */
+        .bottom-bar {
+            padding: 12px 16px;
+            background: rgba(15, 12, 32, 0.95);
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
-            background: rgba(10, 4, 18, 0.85);
-            backdrop-filter: blur(8px);
         }
 
         .input-box {
             flex: 1;
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 20px;
-            padding: 9px 14px;
-            color: #fff;
+            padding: 8px 14px;
+            color: white;
             outline: none;
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        .input-box::placeholder {
-            color: #8b839b;
-        }
-
-        .icon-btn {
-            width: 40px;
-            height: 40px;
+        .action-btn {
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
             cursor: pointer;
-            transition: transform 0.1s;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
         }
 
-        .icon-btn:active {
-            transform: scale(0.92);
+        .action-btn.active {
+            background: #10b981;
         }
 
-        .mic-btn {
-            background: #2b2342;
-            color: #fff;
+        /* Gift Modal */
+        .gift-sheet {
+            display: none;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1a103c;
+            border-radius: 20px 20px 0 0;
+            padding: 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 100;
         }
 
-        .mic-btn.active {
-            background: #00d26a;
+        .gift-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 12px;
         }
 
-        .gift-btn {
-            background: linear-gradient(45deg, #ff007f, #7928ca);
-            color: #fff;
+        .gift-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
         }
 
-        .send-btn {
-            background: #4facfe;
-            color: #fff;
+        .gift-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .gift-card span {
+            display: block;
+            font-size: 24px;
+        }
+
+        .gift-card p {
+            font-size: 11px;
+            margin-top: 4px;
+            color: #fbbf24;
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- Top Header -->
-    <div class="header">
-        <div class="room-info">
-            <div class="room-avatar">🎙️</div>
-            <div class="room-details">
-                <h3>Party Room #101</h3>
-                <span>ID: 884920 • 👥 12 Online</span>
+    <!-- Header -->
+    <div class="top-bar">
+        <div class="room-meta">
+            <h2>🎉 Party Room #101</h2>
+            <span>Online: 24 लोग</span>
+        </div>
+        <div class="coins-badge" id="coinBalance">🪙 1,000</div>
+    </div>
+
+    <!-- 8 Voice Seats Grid -->
+    <div class="seats-grid" id="seatsGrid">
+        <!-- Seats dynamically generated -->
+    </div>
+
+    <!-- Mini Party Game Section -->
+    <div class="game-bar">
+        <div>
+            <span style="font-size:12px; color:#cbd5e1;">🎲 Lucky Dice</span>
+            <div id="diceResult" style="font-size:14px; font-weight:bold; color:#fcd34d;">रोल करें और जीतें!</div>
+        </div>
+        <button onclick="rollLuckyDice()">रोल (Roll)</button>
+    </div>
+
+    <!-- Chat Stream -->
+    <div class="chat-area" id="chatArea">
+        <div class="chat-bubble">
+            <span class="chat-user">सिस्टम:</span>
+            <span class="chat-msg">रूम में आपका स्वागत है! खाली सीट पर क्लिक करके माइक लें।</span>
+        </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="bottom-bar">
+        <input type="text" id="msgInput" class="input-box" placeholder="चैट करें..." onkeydown="handleEnter(event)">
+        <button class="action-btn" id="micBtn" onclick="toggleMic()" title="माइक ऑन/ऑफ">🎙️</button>
+        <button class="action-btn" onclick="openGiftSheet()" title="गिफ्ट भेजें">🎁</button>
+        <button class="action-btn" onclick="sendMessage()" style="background:#7c3aed;">➤</button>
+    </div>
+
+    <!-- Gift Sheet -->
+    <div class="gift-sheet" id="giftSheet">
+        <div style="display:flex; justify-content:space-between; align-items:center; color:#fff;">
+            <strong style="font-size:14px;">गिफ्ट भेजें</strong>
+            <span style="cursor:pointer; font-size:18px;" onclick="closeGiftSheet()">✕</span>
+        </div>
+        <div class="gift-grid">
+            <div class="gift-card" onclick="sendGift('🌹 गुलाब', 10)">
+                <span>🌹</span>
+                <p>10 कॉइन</p>
+            </div>
+            <div class="gift-card" onclick="sendGift('🚀 रॉकेट', 50)">
+                <span>🚀</span>
+                <p>50 कॉइन</p>
+            </div>
+            <div class="gift-card" onclick="sendGift('👑 क्राउन', 100)">
+                <span>👑</span>
+                <p>100 कॉइन</p>
+            </div>
+            <div class="gift-card" onclick="sendGift('🏎️ सुपर कार', 200)">
+                <span>🏎️</span>
+                <p>200 कॉइन</p>
             </div>
         </div>
-        <button class="close-btn" onclick="alert('कमरा बंद किया गया')">✕</button>
-    </div>
-
-    <!-- Voice Seats (8 Seats Layout) -->
-    <div class="seats-grid" id="seatsGrid">
-        <!-- Seats will render via JS -->
-    </div>
-
-    <!-- Live Chat Messages -->
-    <div class="chat-container" id="chatBox">
-        <div class="chat-bubble system-msg">
-            🎉 रूम में आपका स्वागत है! नियमों का पालन करें।
-        </div>
-    </div>
-
-    <!-- Controls -->
-    <div class="footer-controls">
-        <button class="icon-btn mic-btn" id="micBtn" onclick="toggleMic()">🎙️</button>
-        <input type="text" id="chatInput" class="input-box" placeholder="मैसेज लिखें..." onkeydown="handleKey(event)">
-        <button class="icon-btn send-btn" onclick="sendMessage()">➤</button>
-        <button class="icon-btn gift-btn" onclick="sendGift()">🎁</button>
     </div>
 </div>
 
 <script>
-    // 8 Seats Data
+    let userCoins = 1000;
+    let isMicOn = false;
+    let mySeatIndex = null;
+
+    // 8 Voice Seats Setup
     const seatsData = [
-        { id: 1, name: "Host (You)", icon: "👑", occupied: true, speaking: true },
-        { id: 2, name: "Rahul", icon: "😎", occupied: true, speaking: false },
-        { id: 3, name: "Pooja", icon: "🌸", occupied: true, speaking: false },
-        { id: 4, name: "खाली", icon: "+", occupied: false, speaking: false },
-        { id: 5, name: "खाली", icon: "+", occupied: false, speaking: false },
-        { id: 6, name: "खाली", icon: "+", occupied: false, speaking: false },
-        { id: 7, name: "खाली", icon: "+", occupied: false, speaking: false },
-        { id: 8, name: "खाली", icon: "+", occupied: false, speaking: false }
+        { name: "होस्ट", icon: "👑", taken: true },
+        { name: "सीट 2", icon: "+", taken: false },
+        { name: "सीट 3", icon: "+", taken: false },
+        { name: "सीट 4", icon: "+", taken: false },
+        { name: "सीट 5", icon: "+", taken: false },
+        { name: "सीट 6", icon: "+", taken: false },
+        { name: "सीट 7", icon: "+", taken: false },
+        { name: "सीट 8", icon: "+", taken: false }
     ];
 
-    let micOn = false;
-
-    // Render Seats
     function renderSeats() {
-        const grid = document.getElementById('seatsGrid');
-        grid.innerHTML = '';
+        const grid = document.getElementById("seatsGrid");
+        grid.innerHTML = "";
         seatsData.forEach((seat, index) => {
-            const seatDiv = document.createElement('div');
-            seatDiv.className = `seat ${seat.occupied ? 'occupied' : ''} ${seat.speaking ? 'speaking' : ''}`;
-            seatDiv.onclick = () => takeSeat(index);
-            seatDiv.innerHTML = `
-                <div class="seat-circle">${seat.icon}</div>
+            const div = document.createElement("div");
+            div.className = "seat-item";
+            div.onclick = () => takeSeat(index);
+            div.innerHTML = `
+                <div class="avatar-circle ${seat.taken ? 'active' : ''}">
+                    ${seat.icon}
+                    <div class="speaking-badge"></div>
+                </div>
                 <div class="seat-name">${seat.name}</div>
             `;
-            grid.appendChild(seatDiv);
+            grid.appendChild(div);
         });
     }
 
-    // Seat Click Action
     function takeSeat(index) {
-        if (!seatsData[index].occupied) {
-            seatsData[index].occupied = true;
-            seatsData[index].name = "User";
-            seatsData[index].icon = "🎧";
-            renderSeats();
-            addChat("सिस्टम", "आप सीट #" + (index + 1) + " पर बैठ गए!");
-        }
-    }
-
-    // Toggle Mic
-    function toggleMic() {
-        micOn = !micOn;
-        const btn = document.getElementById('micBtn');
-        if (micOn) {
-            btn.classList.add('active');
-            btn.innerText = "🔊";
-            seatsData[0].speaking = true;
-            addChat("सिस्टम", "माइक चालू हो गया।");
+        if (index === 0) return; // Host seat locked
+        
+        if (mySeatIndex === index) {
+            // Leave seat
+            seatsData[index] = { name: "खाली", icon: "+", taken: false };
+            mySeatIndex = null;
+            addChatMessage("सिस्टम", "आप सीट से नीचे उतर गए।");
         } else {
-            btn.classList.remove('active');
-            btn.innerText = "🎙️";
-            seatsData[0].speaking = false;
-            addChat("सिस्टम", "माइक बंद किया गया।");
+            // Take seat
+            if (mySeatIndex !== null) {
+                seatsData[mySeatIndex] = { name: "खाली", icon: "+", taken: false };
+            }
+            seatsData[index] = { name: "आप", icon: "😎", taken: true };
+            mySeatIndex = index;
+            addChatMessage("सिस्टम", `आप सीट नंबर ${index + 1} पर बैठ गए!`);
         }
         renderSeats();
     }
 
-    // Send Message
-    function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const text = input.value.trim();
-        if (text) {
-            addChat("You", text);
-            input.value = "";
+    function toggleMic() {
+        const micBtn = document.getElementById("micBtn");
+        if (mySeatIndex === null) {
+            alert("माइक खोलने के लिए पहले किसी खाली सीट पर क्लिक करें!");
+            return;
+        }
+        isMicOn = !isMicOn;
+        if (isMicOn) {
+            micBtn.classList.add("active");
+            micBtn.innerText = "🔊";
+            addChatMessage("माइक", "आपका माइक अब चालू (LIVE) है।");
+        } else {
+            micBtn.classList.remove("active");
+            micBtn.innerText = "🎙️";
+            addChatMessage("माइक", "माइक म्यूट कर दिया गया।");
         }
     }
 
-    function handleKey(e) {
-        if (e.key === 'Enter') sendMessage();
+    function rollLuckyDice() {
+        const num = Math.floor(Math.random() * 6) + 1;
+        document.getElementById("diceResult").innerText = `आपका नंबर: ${num} 🎲`;
+        addChatMessage("गेम", `आपने डाइस घुमाया और ${num} आया!`);
     }
 
-    function addChat(user, msg) {
-        const chatBox = document.getElementById('chatBox');
-        const bubble = document.createElement('div');
-        bubble.className = 'chat-bubble';
-        bubble.innerHTML = `<span class="username">${user}:</span> ${msg}`;
-        chatBox.appendChild(bubble);
-        chatBox.scrollTop = chatBox.scrollHeight;
+    function sendMessage() {
+        const input = document.getElementById("msgInput");
+        const msg = input.value.trim();
+        if (msg === "") return;
+        addChatMessage("आप", msg);
+        input.value = "";
     }
 
-    // Send Gift
-    function sendGift() {
-        const gifts = ["🚀 रॉकेट", "💎 डायमंड", "🌹 गुलाब", "👑 ताज"];
-        const randomGift = gifts[Math.floor(Math.random() * gifts.length)];
-        addChat("You", `ने ${randomGift} भेजा! 🎉`);
+    function handleEnter(e) {
+        if (e.key === "Enter") sendMessage();
     }
 
-    // First load
+    function addChatMessage(user, msg, isGift = false) {
+        const chatArea = document.getElementById("chatArea");
+        const div = document.createElement("div");
+        if (isGift) {
+            div.className = "system-gift-msg";
+            div.innerText = `${user} ने ${msg} भेजा!`;
+        } else {
+            div.className = "chat-bubble";
+            div.innerHTML = `<span class="chat-user">${user}:</span><span class="chat-msg">${msg}</span>`;
+        }
+        chatArea.appendChild(div);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function openGiftSheet() {
+        document.getElementById("giftSheet").style.display = "block";
+    }
+
+    function closeGiftSheet() {
+        document.getElementById("giftSheet").style.display = "none";
+    }
+
+    function sendGift(giftName, cost) {
+        if (userCoins < cost) {
+            alert("पर्याप्त कॉइन नहीं हैं!");
+            return;
+        }
+        userCoins -= cost;
+        document.getElementById("coinBalance").innerText = `🪙 ${userCoins.toLocaleString()}`;
+        addChatMessage("आप", giftName, true);
+        closeGiftSheet();
+    }
+
+    // Initial load
     renderSeats();
 </script>
+
 </body>
 </html>
