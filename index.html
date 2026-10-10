@@ -1,106 +1,365 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My Voice Party</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#100d20;color:white;font-family:Arial,sans-serif}
-header{padding:18px;background:#20183b;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:23px;font-weight:bold;color:#d9a7ff}
-.coins{background:#38265a;padding:9px 12px;border-radius:20px}
-nav{display:flex;justify-content:space-around;background:#1a142d;padding:14px 3px;position:sticky;top:0}
-nav button{background:none;border:0;color:#ddd;font-size:14px}
-main{padding:16px;max-width:900px;margin:auto}
-h2{font-size:21px}
-.banner{padding:23px;border-radius:18px;background:linear-gradient(120deg,#7135bb,#e24c96);margin:14px 0}
-.banner h2{font-size:25px;margin-top:0}
-.actions{display:flex;gap:10px;flex-wrap:wrap}
-.btn{border:0;border-radius:12px;padding:12px 16px;background:#e2b5ff;color:#231039;font-weight:bold}
-.rooms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.room{padding:15px;background:#211a35;border:1px solid #45325e;border-radius:15px}
-.room .emoji{font-size:28px}
-.room p{color:#c6bad8;font-size:13px}
-.room button{background:#a86be5;color:white;border:0;border-radius:9px;padding:9px}
-section{margin-bottom:25px}
-.notice{color:#cbbdde;font-size:13px;line-height:1.6}
-footer{text-align:center;padding:22px;color:#a99ab9}
-@media(min-width:650px){.rooms{grid-template-columns:repeat(3,minmax(0,1fr))}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hayi Voice Party Room</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(180deg, #1f0b35 0%, #0d0614 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Mobile Frame */
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            height: 100vh;
+            max-height: 860px;
+            background: radial-gradient(circle at top, #3b145a 0%, #120724 100%);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            overflow: hidden;
+            border-radius: 16px;
+        }
+
+        /* Top Header */
+        .header {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .room-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .room-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ff007f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .room-details h3 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .room-details span {
+            font-size: 11px;
+            color: #a39bb8;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Voice Seats Grid */
+        .seats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            padding: 20px 14px;
+        }
+
+        .seat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .seat-circle {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1.5px dashed rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+        }
+
+        .seat.occupied .seat-circle {
+            border: 2px solid #00f2fe;
+            background: #2b1055;
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+        }
+
+        .seat.speaking .seat-circle {
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); border-color: #00f2fe; }
+            100% { transform: scale(1.08); border-color: #ff007f; box-shadow: 0 0 16px #ff007f; }
+        }
+
+        .seat-name {
+            font-size: 11px;
+            color: #c9c3d5;
+            text-align: center;
+            max-width: 65px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Chat Section */
+        .chat-container {
+            flex: 1;
+            padding: 10px 14px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            mask-image: linear-gradient(to top, black 80%, transparent 100%);
+        }
+
+        .chat-bubble {
+            background: rgba(0, 0, 0, 0.35);
+            padding: 7px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            align-self: flex-start;
+            max-width: 85%;
+            line-height: 1.3;
+        }
+
+        .chat-bubble .username {
+            color: #ffd200;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .system-msg {
+            color: #00f2fe;
+            font-size: 12px;
+            background: rgba(0, 242, 254, 0.1);
+        }
+
+        /* Controls / Bottom Bar */
+        .footer-controls {
+            padding: 12px 14px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: rgba(10, 4, 18, 0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        .input-box {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 9px 14px;
+            color: #fff;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .input-box::placeholder {
+            color: #8b839b;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .icon-btn:active {
+            transform: scale(0.92);
+        }
+
+        .mic-btn {
+            background: #2b2342;
+            color: #fff;
+        }
+
+        .mic-btn.active {
+            background: #00d26a;
+        }
+
+        .gift-btn {
+            background: linear-gradient(45deg, #ff007f, #7928ca);
+            color: #fff;
+        }
+
+        .send-btn {
+            background: #4facfe;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
-<header>
-  <div class="logo">🎙 My Voice Party</div>
-  <div class="coins">🪙 <span id="coins">1000</span></div>
-</header>
-<nav>
-  <button onclick="show('home')">🏠 Home</button>
-  <button onclick="show('rooms')">🎤 Voice Rooms</button>
-  <button onclick="show('games')">🎮 Games</button>
-  <button onclick="show('profile')">👤 Profile</button>
-</nav>
-<main>
-<section id="home">
-  <div class="banner">
-    <h2>Welcome to the Party!</h2>
-    <p>Meet friends, join rooms and enjoy games together.</p>
-    <div class="actions">
-      <button class="btn" onclick="show('rooms')">Explore Rooms</button>
-      <button class="btn" onclick="show('games')">Play Games</button>
+
+<div class="app-container">
+    <!-- Top Header -->
+    <div class="header">
+        <div class="room-info">
+            <div class="room-avatar">🎙️</div>
+            <div class="room-details">
+                <h3>Party Room #101</h3>
+                <span>ID: 884920 • 👥 12 Online</span>
+            </div>
+        </div>
+        <button class="close-btn" onclick="alert('कमरा बंद किया गया')">✕</button>
     </div>
-  </div>
-  <h2>Popular Voice Rooms</h2>
-  <div class="rooms">
-    <div class="room"><div class="emoji">🎵</div><b>Music Lounge</b><p>Music and friendly chat</p><button onclick="join('Music Lounge')">Join Room</button></div>
-    <div class="room"><div class="emoji">💬</div><b>Friends Corner</b><p>Meet new people</p><button onclick="join('Friends Corner')">Join Room</button></div>
-    <div class="room"><div class="emoji">🎉</div><b>Party Time</b><p>Fun and entertainment</p><button onclick="join('Party Time')">Join Room</button></div>
-  </div>
-</section>
-<section id="rooms" hidden>
-  <h2>🎤 Voice Rooms</h2>
-  <p>Choose a room to view its details.</p>
-  <div class="rooms">
-    <div class="room">🎵 <b>Music Lounge</b><p>Chat and music</p><button onclick="join('Music Lounge')">Join</button></div>
-    <div class="room">💬 <b>Friends Corner</b><p>Meet friends</p><button onclick="join('Friends Corner')">Join</button></div>
-    <div class="room">🎉 <b>Party Time</b><p>Party together</p><button onclick="join('Party Time')">Join</button></div>
-  </div>
-</section>
-<section id="games" hidden>
-  <h2>🎮 Games</h2>
-  <div class="rooms">
-    <div class="room">🎲 <b>Dice Game</b><p>Roll a dice for fun.</p><button onclick="dice()">Roll Dice</button><p id="diceResult"></p></div>
-    <div class="room">🧠 <b>Quick Quiz</b><p>Which planet do we live on?</p><button onclick="alert('Correct answer: Earth 🌍')">Answer</button></div>
-  </div>
-  <p class="notice">These are local mini-games, not online multiplayer games.</p>
-</section>
-<section id="profile" hidden>
-  <h2>👤 My Profile</h2>
-  <div class="room">
-    <p>Display name</p>
-    <input id="username" value="Party Guest" maxlength="30" style="padding:12px;border-radius:8px;width:100%">
-    <p><button class="btn" onclick="saveName()">Save Name</button></p>
-    <p id="saved"></p>
-  </div>
-  <p class="notice">This profile is saved only in this browser. Online accounts are not connected yet.</p>
-</section>
-</main>
-<footer>My Voice Party · Early version</footer>
+
+    <!-- Voice Seats (8 Seats Layout) -->
+    <div class="seats-grid" id="seatsGrid">
+        <!-- Seats will render via JS -->
+    </div>
+
+    <!-- Live Chat Messages -->
+    <div class="chat-container" id="chatBox">
+        <div class="chat-bubble system-msg">
+            🎉 रूम में आपका स्वागत है! नियमों का पालन करें।
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="footer-controls">
+        <button class="icon-btn mic-btn" id="micBtn" onclick="toggleMic()">🎙️</button>
+        <input type="text" id="chatInput" class="input-box" placeholder="मैसेज लिखें..." onkeydown="handleKey(event)">
+        <button class="icon-btn send-btn" onclick="sendMessage()">➤</button>
+        <button class="icon-btn gift-btn" onclick="sendGift()">🎁</button>
+    </div>
+</div>
+
 <script>
-function show(id){
-  document.querySelectorAll('main section').forEach(s=>s.hidden=true);
-  document.getElementById(id).hidden=false;
-  window.scrollTo(0,0);
-}
-function join(name){
-  alert(name+' selected. Live voice chat is not connected yet.');
-}
-function dice(){
-  document.getElementById('diceResult').textContent='You rolled: '+(Math.floor(Math.random()*6)+1);
-}
-function saveName(){
-  document.getElementById('saved').textContent='Name saved for this page: '+document.getElementById('username').value;
-}
+    // 8 Seats Data
+    const seatsData = [
+        { id: 1, name: "Host (You)", icon: "👑", occupied: true, speaking: true },
+        { id: 2, name: "Rahul", icon: "😎", occupied: true, speaking: false },
+        { id: 3, name: "Pooja", icon: "🌸", occupied: true, speaking: false },
+        { id: 4, name: "खाली", icon: "+", occupied: false, speaking: false },
+        { id: 5, name: "खाली", icon: "+", occupied: false, speaking: false },
+        { id: 6, name: "खाली", icon: "+", occupied: false, speaking: false },
+        { id: 7, name: "खाली", icon: "+", occupied: false, speaking: false },
+        { id: 8, name: "खाली", icon: "+", occupied: false, speaking: false }
+    ];
+
+    let micOn = false;
+
+    // Render Seats
+    function renderSeats() {
+        const grid = document.getElementById('seatsGrid');
+        grid.innerHTML = '';
+        seatsData.forEach((seat, index) => {
+            const seatDiv = document.createElement('div');
+            seatDiv.className = `seat ${seat.occupied ? 'occupied' : ''} ${seat.speaking ? 'speaking' : ''}`;
+            seatDiv.onclick = () => takeSeat(index);
+            seatDiv.innerHTML = `
+                <div class="seat-circle">${seat.icon}</div>
+                <div class="seat-name">${seat.name}</div>
+            `;
+            grid.appendChild(seatDiv);
+        });
+    }
+
+    // Seat Click Action
+    function takeSeat(index) {
+        if (!seatsData[index].occupied) {
+            seatsData[index].occupied = true;
+            seatsData[index].name = "User";
+            seatsData[index].icon = "🎧";
+            renderSeats();
+            addChat("सिस्टम", "आप सीट #" + (index + 1) + " पर बैठ गए!");
+        }
+    }
+
+    // Toggle Mic
+    function toggleMic() {
+        micOn = !micOn;
+        const btn = document.getElementById('micBtn');
+        if (micOn) {
+            btn.classList.add('active');
+            btn.innerText = "🔊";
+            seatsData[0].speaking = true;
+            addChat("सिस्टम", "माइक चालू हो गया।");
+        } else {
+            btn.classList.remove('active');
+            btn.innerText = "🎙️";
+            seatsData[0].speaking = false;
+            addChat("सिस्टम", "माइक बंद किया गया।");
+        }
+        renderSeats();
+    }
+
+    // Send Message
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (text) {
+            addChat("You", text);
+            input.value = "";
+        }
+    }
+
+    function handleKey(e) {
+        if (e.key === 'Enter') sendMessage();
+    }
+
+    function addChat(user, msg) {
+        const chatBox = document.getElementById('chatBox');
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble';
+        bubble.innerHTML = `<span class="username">${user}:</span> ${msg}`;
+        chatBox.appendChild(bubble);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Send Gift
+    function sendGift() {
+        const gifts = ["🚀 रॉकेट", "💎 डायमंड", "🌹 गुलाब", "👑 ताज"];
+        const randomGift = gifts[Math.floor(Math.random() * gifts.length)];
+        addChat("You", `ने ${randomGift} भेजा! 🎉`);
+    }
+
+    // First load
+    renderSeats();
 </script>
 </body>
 </html>
